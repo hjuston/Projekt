@@ -63,12 +63,12 @@ public class TileManager : MonoBehaviour
         }
         else
         {
-            Building building = Helper.GetBuildingManager().GetBuildingByType(type);
+            Building building = Helper.GetBuildingManager().GetBuildingByType(type).GetCopy();
 
-            if (Helper.GetGameManager().GetCurrentMoney() >= building.Cost)
+            if (Helper.GetGameManager().GetCurrentMoney() >= building.GetCost())
             {
                 // Odejmij gotówkę
-                Helper.GetGameManager().SpendMoney(building.Cost);
+                Helper.GetGameManager().SpendMoney(building.GetCost());
 
                 // Postaw budynek na danym polu
                 CurrentTile.SetBuilding(building);

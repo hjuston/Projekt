@@ -10,8 +10,10 @@ public class GUIManager : MonoBehaviour {
 	public Text BuildingNameLabel;
     public GameObject BuildingButtonPanel;
 
-    public Button SellButton;
+    public Text UpgradeNumberText;
 
+    public Button SellButton;
+    public Button UpgradeButton;
 
     void Start()
     {
@@ -28,12 +30,16 @@ public class GUIManager : MonoBehaviour {
 		if (building == null)
 		{
 			BuildingNameLabel.text = "none";
+            UpgradeNumberText.text = "";
 			SetSellButtonAvailable(false);
+            SetUpgradeButtonAvailable(false);
 		}
 		else
 		{
 			BuildingNameLabel.text = building.Name;
+            UpgradeNumberText.text = building.UpgradeNumber.ToString();
 			SetSellButtonAvailable(true);
+            SetUpgradeButtonAvailable(true);
 		}
 	}
 
@@ -120,10 +126,24 @@ public class GUIManager : MonoBehaviour {
 		SellButton.gameObject.SetActive(available);
 		if(available)
 		{
-			Building building = Helper.GetTileManager().CurrentTile.Building;
-
-			int sellPrice = Helper.GetGameManager().CalculateSellPrice(building.Cost);
+            int sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
 			SellButton.GetComponentInChildren<Text>().text = string.Format("Sprzedaj za {0}", sellPrice);
 		}
 	}
+
+
+    /// <summary>
+    /// Metoda aktywuje lub dezaktywuje przycisk UpgradeButton. W przypadku wyświetlenia zmieniany jest jego opis
+    /// uwzględniając cenę ulepszenia budynku.
+    /// </summary>
+    /// <param name="available"></param>
+    public void SetUpgradeButtonAvailable(bool available)
+    {
+        UpgradeButton.gameObject.SetActive(available);
+        if(available)
+        {
+            int upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
+            UpgradeButton.GetComponentInChildren<Text>().text = string.Format("Ulepsz za {0}", upgradePrice);
+        }
+    }
 }

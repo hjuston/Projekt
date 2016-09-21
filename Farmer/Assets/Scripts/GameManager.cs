@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     /// <param name="building"></param>
     public void AddBuildingToCurrentBuildingList(Building building)
     {
-        _generateMoneyCount += building.GenerateMoney;
+        _generateMoneyCount += building.GetGenerateMoney();
         Helper.GetGUIManager().SetMoneyGenerateInfo(_generateMoneyCount);
     }
 
@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
         Helper.GetGUIManager().SetMoneyGenerateInfo(_generateMoneyCount);
     }
 
+   
     /// <summary>
     /// Metoda zwraca aktualną ilość gotówki.
     /// </summary>
@@ -70,17 +71,6 @@ public class GameManager : MonoBehaviour
         this._currentMoney -= money;
         Helper.GetGUIManager().SetMoneyInfo(_currentMoney);
     }
-    
-
-    /// <summary>
-    /// Metoda oblicza cenę sprzedaży budynku.
-    /// </summary>
-    /// <param name="buildingPrice"></param>
-    /// <returns></returns>
-    public int CalculateSellPrice(int buildingPrice)
-    {
-        return Mathf.FloorToInt(buildingPrice / 2.54f);
-    }
 
 
     /// <summary>
@@ -89,7 +79,8 @@ public class GameManager : MonoBehaviour
     public void SellBuilding()
     {
         // Przypisanie gotówki
-        int sellPrice = CalculateSellPrice(Helper.GetTileManager().CurrentTile.Building.Cost);
+        int sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
+
         this._currentMoney += sellPrice;
         Helper.GetGUIManager().SetMoneyInfo(this._currentMoney);
 
@@ -98,5 +89,31 @@ public class GameManager : MonoBehaviour
 
         // Wyczyszczenie Tile
         Helper.GetTileManager().CurrentTile.SetBuilding(null);
+    }
+
+
+    /// <summary>
+    /// Metoda, która powoduje ulepszenie budynku. Wywołane przez przycisk UpgradeButton
+    /// </summary>
+    public void UpgradeBuilding()
+    {
+        int upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
+
+        if (this._currentMoney >= upgradePrice)
+        {
+            // Zakup ulepszenia i zmiana generowanego przychodu
+            this._currentMoney -= upgradePrice;
+
+            RemoveBuildingFromCurrentBuildingList(Helper.GetTileManager().CurrentTile.Building);
+            Helper.GetTileManager().CurrentTile.Building.Upgrade();
+            AddBuildingToCurrentBuildingList(Helper.GetTileManager().CurrentTile.Building);
+
+            // Wyświetlanie informacji o ulepszeniu w panelu
+            Helper.GetGUIManager().SetBuildingInfo(Helper.GetTileManager().CurrentTile.Building);
+        }
+        else
+        {
+            Debug.Log("Brak środków do zakupu tego ulepszenia.");
+        }
     }
 }

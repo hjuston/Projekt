@@ -22,6 +22,6 @@ public class UpgradeButton : MonoBehaviour {
     /// <returns></returns>
     public int GetBuildingCost()
     {
-        return Helper.GetBuildingManager().GetBuildingByType(Type).Cost;
+        return Helper.GetBuildingManager().GetBuildingByType(Type).GetCost();
     }
 }
