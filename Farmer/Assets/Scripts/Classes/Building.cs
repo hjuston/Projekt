@@ -7,6 +7,7 @@ public class Building  {
 
     public string Name;
     public int Cost;
+    public int GenerateMoney;
 
     public GameObject Prefab;
     public GameObject ButtonPrefab;

@@ -6,9 +6,9 @@ public class TileManager : MonoBehaviour
 {
 	public Tile CurrentTile;
 
-
 	void Update()
 	{
+        // Sprawdzanie, czy użytkownik kliknął na pole
 		if (Input.GetMouseButtonDown(0))
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -24,6 +24,11 @@ public class TileManager : MonoBehaviour
 		}
 	}
 
+
+    /// <summary>
+    /// Metoda która powoduje zaznaczenie wybranego pola
+    /// </summary>
+    /// <param name="tile"></param>
 	void SelectTile(GameObject tile)
 	{
 		if (tile != null)
@@ -45,10 +50,39 @@ public class TileManager : MonoBehaviour
 		}
 	}
 
+
+    /// <summary>
+    /// Metoda, która tworzy budynek na aktualnie wybranym polu
+    /// </summary>
+    /// <param name="type"></param>
 	public void SetBuildingOnCurrentTile(BuildingType type)
 	{
-		Building building = Helper.GetBuildingManager().GetBuildingByType(type);
-		CurrentTile.SetBuilding(building);
-		Helper.GetGUIManager().SetBuildingInfo(CurrentTile.Building);
+        if(CurrentTile.Building != null)
+        {
+            Debug.Log("Na wybranym polu aktualnie znajduje się budynek!");
+        }
+        else
+        {
+            Building building = Helper.GetBuildingManager().GetBuildingByType(type);
+
+            if (Helper.GetGameManager().GetCurrentMoney() >= building.Cost)
+            {
+                // Odejmij gotówkę
+                Helper.GetGameManager().SpendMoney(building.Cost);
+
+                // Postaw budynek na danym polu
+                CurrentTile.SetBuilding(building);
+
+                // Dodaj budynek do listy budynków generujących gotówkę
+                Helper.GetGameManager().AddBuildingToCurrentBuildingList(building);
+
+                // Odśwież panel wyświetlający informację o polu
+                Helper.GetGUIManager().SetBuildingInfo(CurrentTile.Building);
+            }
+            else
+            {
+                Debug.Log("Brak wystaczającej ilości gotówki.");
+            }
+        }
 	}
 }

@@ -3,8 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class UpgradeButton : MonoBehaviour {
-	// potrzebne?
-	public BuildingType Type;
+
+    public BuildingType Type;
 
 	void Start()
 	{
@@ -14,4 +14,14 @@ public class UpgradeButton : MonoBehaviour {
 			btn.onClick.AddListener(() => Helper.GetTileManager().SetBuildingOnCurrentTile(Type));
 		}
 	}
+
+
+    /// <summary>
+    /// Metoda zwraca koszt budynku
+    /// </summary>
+    /// <returns></returns>
+    public int GetBuildingCost()
+    {
+        return Helper.GetBuildingManager().GetBuildingByType(Type).Cost;
+    }
 }
