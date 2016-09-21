@@ -6,15 +6,14 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     // #####################
-    private int _currentMoney = 100;
-    private int _generateMoneyCount = 0;
-    private List<Building> currentBuildings = new List<Building>();
+    private float _currentMoney = 100;
+    private float _generateMoneyCount = 0;
     // #####################
 
     void Start()
     {
         // Zliczanie gotówki
-        InvokeRepeating("CollectMoney", 0f, 1f);
+        InvokeRepeating("CollectMoney", 0f, 0.1f);
     }
 
 
@@ -23,7 +22,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void CollectMoney()
     {
-        _currentMoney += _generateMoneyCount;
+        _currentMoney += _generateMoneyCount/10;
 
         Helper.GetGUIManager().SetMoneyInfo(_currentMoney);
     }
@@ -56,7 +55,7 @@ public class GameManager : MonoBehaviour
     /// Metoda zwraca aktualną ilość gotówki.
     /// </summary>
     /// <returns></returns>
-    public int GetCurrentMoney()
+    public float GetCurrentMoney()
     {
         return _currentMoney;
     }
@@ -110,6 +109,8 @@ public class GameManager : MonoBehaviour
 
             // Wyświetlanie informacji o ulepszeniu w panelu
             Helper.GetGUIManager().SetBuildingInfo(Helper.GetTileManager().CurrentTile.Building);
+            Helper.GetGUIManager().SetMoneyGenerateInfo(_generateMoneyCount);
+            Helper.GetGUIManager().SetMoneyInfo(_currentMoney);
         }
         else
         {

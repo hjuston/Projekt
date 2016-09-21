@@ -47,7 +47,7 @@ public class GUIManager : MonoBehaviour {
     /// Metoda wyświetla informacje o gotówce generowanej w ciągu jednej sekundy.
     /// </summary>
     /// <param name="money"></param>
-    public void SetMoneyGenerateInfo(int money)
+    public void SetMoneyGenerateInfo(float money)
     {
         MoneyGenerateText.text = money.ToString();
     }
@@ -57,9 +57,9 @@ public class GUIManager : MonoBehaviour {
 	/// Metoda ustawia informacje o aktualnej gotówce.
 	/// </summary>
 	/// <param name="building"></param>
-	public void SetMoneyInfo(int money)
+	public void SetMoneyInfo(float money)
 	{
-		MoneyLabel.text = money.ToString();
+		MoneyLabel.text =  Mathf.FloorToInt(money).ToString();
 
         // Ukrywanie/wyświetlanie przycisków w zależności od gotówki
         DisplayAvailableBuildingButtons(money);
@@ -69,7 +69,7 @@ public class GUIManager : MonoBehaviour {
     /// <summary>
     /// Metoda ukrywa lub wyświetla przycisku w zależności od ilości gotówki
     /// </summary>
-    void DisplayAvailableBuildingButtons(int money)
+    void DisplayAvailableBuildingButtons(float money)
     {
         Button[] upgradeButtons = BuildingButtonPanel.GetComponentsInChildren<Button>(true);
         foreach(Button upgradeButton in upgradeButtons)
