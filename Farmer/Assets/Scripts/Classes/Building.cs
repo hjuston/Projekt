@@ -6,8 +6,11 @@ using System;
 public class Building  {
 
     public string Name;
-    public int Cost;
-    public int GenerateMoney;
+    
+    public BigInteger BaseCost;
+    public float CostMultiplier;
+
+    public BigInteger BaseIncome;
 
     public GameObject Prefab;
     public GameObject ButtonPrefab;
@@ -15,14 +18,14 @@ public class Building  {
     public BuildingType Type;
     public int UpgradeNumber = 0;
 
-
     /// <summary>
     /// Metoda oblicza koszt budowli na podstawie poziomu ulepszenia
     /// </summary>
     /// <returns></returns>
-    public int GetCost()
+    public BigInteger GetCost()
     {
-        return Mathf.FloorToInt((float)Math.Pow(Math.E, UpgradeNumber) * Cost);
+        // Wzór BaseCost * CostMultiplier ^ (UpgradeNumber)
+        return BaseCost * ((float)Math.Pow(CostMultiplier, UpgradeNumber+1));
     }
 
 
@@ -30,9 +33,10 @@ public class Building  {
     /// Metoda oblicza generowany przychód na podstawie poziomu ulepszenia
     /// </summary>
     /// <returns></returns>
-    public int GetGenerateMoney()
+    public BigInteger GetIncome()
     {
-        return Mathf.FloorToInt((float)Math.Pow(Math.E, UpgradeNumber) * GenerateMoney);
+        // Wzór BaseIncome  * UpgradeNumber - np. 5, 10, 15, 20
+        return BaseIncome * new BigInteger(UpgradeNumber == 0 ? 1 : UpgradeNumber);
     }
 
 
@@ -40,9 +44,9 @@ public class Building  {
     /// Metoda oblicza kwotę, za którą można sprzedać budynek
     /// </summary>
     /// <returns></returns>
-    public int GetSellPrice()
+    public BigInteger GetSellPrice()
     {
-        return Mathf.FloorToInt(Cost / 2.54f);
+        return BaseCost / 3;
     }
 
     /// <summary>

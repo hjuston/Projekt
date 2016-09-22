@@ -20,7 +20,7 @@ public class UpgradeButton : MonoBehaviour {
     /// Metoda zwraca koszt budynku
     /// </summary>
     /// <returns></returns>
-    public int GetBuildingCost()
+    public BigInteger GetBuildingCost()
     {
         return Helper.GetBuildingManager().GetBuildingByType(Type).GetCost();
     }

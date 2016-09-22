@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
+using System.ComponentModel;
 
 public static class Helper {
 
@@ -73,4 +75,43 @@ public static class Helper {
 
 		return result;
 	}
+
+    public static string GetDisplayableValue(BigInteger value)
+    {
+        int tripleGroupsCount = ((value.ToString().Length) / 3);
+        if (value.ToString().Length % 3 > 0)
+        {
+            tripleGroupsCount++;
+        }
+
+        int howManyNumbersDisplay = value.ToString().Length % 3 == 0 ? 3 : value.ToString().Length % 3;
+
+        CurrencySize size = (CurrencySize)(tripleGroupsCount == 0 ? 1 : tripleGroupsCount);
+        if (size >= CurrencySize.K)
+        {
+            return string.Format("{0}.{1} {2}", value.ToString().Substring(0, howManyNumbersDisplay), value.ToString().Substring(howManyNumbersDisplay, 2), GetEnumDescription(size));
+        }
+        else
+        {
+            return string.Format("{0} {1}", value.ToString().Substring(0, howManyNumbersDisplay), GetEnumDescription(size));
+        }
+    }
+
+
+
+    /// <summary>
+    /// Metoda pobiera opis wielkości liczy
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static string GetEnumDescription(CurrencySize value)
+    {
+        object[] attributes = typeof(CurrencySize).
+            GetMember(value.ToString())
+            .FirstOrDefault()
+            .GetCustomAttributes(typeof(DescriptionAttribute),
+            false);
+
+        return attributes.Any() ? ((DescriptionAttribute)attributes[0]).Description : value.ToString();
+    }
 }

@@ -15,41 +15,45 @@ public class GUIManager : MonoBehaviour {
     public Button SellButton;
     public Button UpgradeButton;
 
+    public GameObject UpgradePanel;
+
+
+
     void Start()
     {
         // Tworzenie przycisków do tworzenia farm
         InitializeBuildingButtons();
     }
 
-	/// <summary>
-	/// Metoda ustawia informacje o budynku w panelu informacji.
-	/// </summary>
-	/// <param name="building"></param>
-	public void SetBuildingInfo(Building building)
-	{
-		if (building == null)
-		{
-			BuildingNameLabel.text = "none";
+    /// <summary>
+    /// Metoda ustawia informacje o budynku w panelu informacji.
+    /// </summary>
+    /// <param name="building"></param>
+    public void SetBuildingInfo(Building building)
+    {
+        if (building == null)
+        {
+            BuildingNameLabel.text = "none";
             UpgradeNumberText.text = "";
-			SetSellButtonAvailable(false);
+            SetSellButtonAvailable(false);
             SetUpgradeButtonAvailable(false);
-		}
-		else
-		{
-			BuildingNameLabel.text = building.Name;
+        }
+        else
+        {
+            BuildingNameLabel.text = building.Name;
             UpgradeNumberText.text = building.UpgradeNumber.ToString();
-			SetSellButtonAvailable(true);
+            SetSellButtonAvailable(true);
             SetUpgradeButtonAvailable(true);
-		}
-	}
+        }
+    }
 
     /// <summary>
     /// Metoda wyświetla informacje o gotówce generowanej w ciągu jednej sekundy.
     /// </summary>
     /// <param name="money"></param>
-    public void SetMoneyGenerateInfo(float money)
+    public void SetMoneyGenerateInfo(BigInteger money)
     {
-        MoneyGenerateText.text = money.ToString();
+        MoneyGenerateText.text = Helper.GetDisplayableValue(money);
     }
 
 
@@ -57,9 +61,9 @@ public class GUIManager : MonoBehaviour {
 	/// Metoda ustawia informacje o aktualnej gotówce.
 	/// </summary>
 	/// <param name="building"></param>
-	public void SetMoneyInfo(float money)
+	public void SetMoneyInfo(BigInteger money)
 	{
-		MoneyLabel.text =  Mathf.FloorToInt(money).ToString();
+        MoneyLabel.text = Helper.GetDisplayableValue(money);
 
         // Ukrywanie/wyświetlanie przycisków w zależności od gotówki
         DisplayAvailableBuildingButtons(money);
@@ -69,7 +73,7 @@ public class GUIManager : MonoBehaviour {
     /// <summary>
     /// Metoda ukrywa lub wyświetla przycisku w zależności od ilości gotówki
     /// </summary>
-    void DisplayAvailableBuildingButtons(float money)
+    void DisplayAvailableBuildingButtons(BigInteger money)
     {
         Button[] upgradeButtons = BuildingButtonPanel.GetComponentsInChildren<Button>(true);
         foreach(Button upgradeButton in upgradeButtons)
@@ -126,8 +130,8 @@ public class GUIManager : MonoBehaviour {
 		SellButton.gameObject.SetActive(available);
 		if(available)
 		{
-            int sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
-			SellButton.GetComponentInChildren<Text>().text = string.Format("Sprzedaj za {0}", sellPrice);
+            BigInteger sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
+			SellButton.GetComponentInChildren<Text>().text = string.Format("Sprzedaj za {0}", Helper.GetDisplayableValue(sellPrice));
 		}
 	}
 
@@ -142,8 +146,8 @@ public class GUIManager : MonoBehaviour {
         UpgradeButton.gameObject.SetActive(available);
         if(available)
         {
-            int upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
-            UpgradeButton.GetComponentInChildren<Text>().text = string.Format("Ulepsz za {0}", upgradePrice);
+            BigInteger upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
+            UpgradeButton.GetComponentInChildren<Text>().text = string.Format("Ulepsz za {0}", Helper.GetDisplayableValue(upgradePrice));
         }
     }
 }

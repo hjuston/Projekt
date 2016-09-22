@@ -6,6 +6,9 @@ public class TileManager : MonoBehaviour
 {
 	public Tile CurrentTile;
 
+    public Material IdleTileMaterial;
+    public Material SelectedTileMaterial;
+
 	void Update()
 	{
         // Sprawdzanie, czy użytkownik kliknął na pole
@@ -38,17 +41,25 @@ public class TileManager : MonoBehaviour
 			{
 				if (CurrentTile != buildingTile)
 				{
-					if (CurrentTile != null)
-						CurrentTile.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                    if (CurrentTile != null)
+                        CurrentTile.gameObject.GetComponent<Renderer>().material = IdleTileMaterial;
 
 					CurrentTile = buildingTile;
-					CurrentTile.gameObject.GetComponent<Renderer>().material.color = Color.gray;
-				}
-			}
-
-			Helper.GetGUIManager().SetBuildingInfo(CurrentTile.Building);
-		}
-	}
+                    CurrentTile.gameObject.GetComponent<Renderer>().material = SelectedTileMaterial;
+                }
+                
+                Helper.GetGUIManager().SetBuildingInfo(CurrentTile.Building);
+            }
+        }
+        else
+        {
+            if (CurrentTile != null)
+            {
+                CurrentTile.gameObject.GetComponent<Renderer>().material = IdleTileMaterial;
+                CurrentTile = null;
+            }
+        }
+    }
 
 
     /// <summary>
@@ -69,13 +80,13 @@ public class TileManager : MonoBehaviour
             {
                 // Odejmij gotówkę
                 Helper.GetGameManager().SpendMoney(building.GetCost());
-
+                
                 // Postaw budynek na danym polu
                 CurrentTile.SetBuilding(building);
-
+                
                 // Dodaj budynek do listy budynków generujących gotówkę
                 Helper.GetGameManager().AddBuildingToCurrentBuildingList(building);
-
+                
                 // Odśwież panel wyświetlający informację o polu
                 Helper.GetGUIManager().SetBuildingInfo(CurrentTile.Building);
             }

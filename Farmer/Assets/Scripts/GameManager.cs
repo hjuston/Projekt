@@ -5,15 +5,13 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    // #####################
-    private float _currentMoney = 100;
-    private float _generateMoneyCount = 0;
-    // #####################
+    private BigInteger _currentMoney = new BigInteger("150");
+    private BigInteger _generateMoneyCount = new BigInteger("0");
 
     void Start()
     {
         // Zliczanie gotówki
-        InvokeRepeating("CollectMoney", 0f, 0.1f);
+        InvokeRepeating("CollectMoney", 0f, 1f);
     }
 
 
@@ -22,7 +20,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void CollectMoney()
     {
-        _currentMoney += _generateMoneyCount/10;
+        _currentMoney += _generateMoneyCount;
 
         Helper.GetGUIManager().SetMoneyInfo(_currentMoney);
     }
@@ -34,7 +32,7 @@ public class GameManager : MonoBehaviour
     /// <param name="building"></param>
     public void AddBuildingToCurrentBuildingList(Building building)
     {
-        _generateMoneyCount += building.GetGenerateMoney();
+        _generateMoneyCount += building.GetIncome();
         Helper.GetGUIManager().SetMoneyGenerateInfo(_generateMoneyCount);
     }
 
@@ -46,7 +44,7 @@ public class GameManager : MonoBehaviour
     /// <param name="building"></param>
     public void RemoveBuildingFromCurrentBuildingList(Building building)
     {
-        _generateMoneyCount -= building.GenerateMoney;
+        _generateMoneyCount -= building.GetIncome();
         Helper.GetGUIManager().SetMoneyGenerateInfo(_generateMoneyCount);
     }
 
@@ -55,7 +53,7 @@ public class GameManager : MonoBehaviour
     /// Metoda zwraca aktualną ilość gotówki.
     /// </summary>
     /// <returns></returns>
-    public float GetCurrentMoney()
+    public BigInteger GetCurrentMoney()
     {
         return _currentMoney;
     }
@@ -65,9 +63,9 @@ public class GameManager : MonoBehaviour
     /// Metoda powoduje zmniejszenie aktualnej gotówki (np. w wypadku kupna budynku).
     /// </summary>
     /// <param name="money"></param>
-    public void SpendMoney(int money)
+    public void SpendMoney(BigInteger money)
     {
-        this._currentMoney -= money;
+        this._currentMoney = _currentMoney - money;
         Helper.GetGUIManager().SetMoneyInfo(_currentMoney);
     }
 
@@ -78,7 +76,7 @@ public class GameManager : MonoBehaviour
     public void SellBuilding()
     {
         // Przypisanie gotówki
-        int sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
+        BigInteger sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
 
         this._currentMoney += sellPrice;
         Helper.GetGUIManager().SetMoneyInfo(this._currentMoney);
@@ -96,12 +94,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UpgradeBuilding()
     {
-        int upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
-
-        if (this._currentMoney >= upgradePrice)
+        BigInteger upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
+        
+        if (_currentMoney >= upgradePrice)
         {
             // Zakup ulepszenia i zmiana generowanego przychodu
-            this._currentMoney -= upgradePrice;
+            _currentMoney -= upgradePrice;
 
             RemoveBuildingFromCurrentBuildingList(Helper.GetTileManager().CurrentTile.Building);
             Helper.GetTileManager().CurrentTile.Building.Upgrade();
