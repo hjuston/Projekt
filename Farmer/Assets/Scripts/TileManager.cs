@@ -32,7 +32,7 @@ public class TileManager : MonoBehaviour
     /// Metoda która powoduje zaznaczenie wybranego pola
     /// </summary>
     /// <param name="tile"></param>
-	void SelectTile(GameObject tile)
+	public void SelectTile(GameObject tile)
 	{
 		if (tile != null)
 		{

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    private BigInteger _currentMoney = new BigInteger("150");
+    private BigInteger _currentMoney = new BigInteger("120");
     private BigInteger _generateMoneyCount = new BigInteger("0");
 
     void Start()

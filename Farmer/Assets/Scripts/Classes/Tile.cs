@@ -28,7 +28,8 @@ public class Tile : MonoBehaviour
 		{
 			GameObject farm = Instantiate(building.Prefab);
 			farm.transform.SetParent(gameObject.transform);
-			farm.transform.localPosition = new Vector3(0.25f, 5, 0);
+			farm.transform.localPosition = new Vector3(0f, 12, -0.15f);
+			farm.transform.localRotation = Quaternion.identity;
 		}
 	}
 }

@@ -7,6 +7,11 @@ public class GUIManager : MonoBehaviour {
 	public Text MoneyLabel;
     public Text MoneyGenerateText;
 
+	public Text SellCostLabel;
+	public Text UpgradeCostLabel;
+
+	public Text BuildingIncomeLabel;
+
 	public Text BuildingNameLabel;
     public GameObject BuildingButtonPanel;
 
@@ -25,24 +30,48 @@ public class GUIManager : MonoBehaviour {
         InitializeBuildingButtons();
     }
 
+
+	/// <summary>
+	/// Metoda zamyka panel informacji o budowli. Wywoływane przez przycisk Close
+	/// </summary>
+	public void ClosePanel()
+	{
+		Helper.GetTileManager().SelectTile(null);
+		UpgradePanel.SetActive(false);
+	}
+
     /// <summary>
     /// Metoda ustawia informacje o budynku w panelu informacji.
     /// </summary>
     /// <param name="building"></param>
     public void SetBuildingInfo(Building building)
-    {
-        if (building == null)
+	{
+		UpgradePanel.SetActive(true);
+		if (building == null)
         {
             BuildingNameLabel.text = "none";
             UpgradeNumberText.text = "";
-            SetSellButtonAvailable(false);
+
+			BuildingIncomeLabel.text = "none";
+
+			UpgradeCostLabel.text = "";
+			SellCostLabel.text = "";
+
+			SetSellButtonAvailable(false);
             SetUpgradeButtonAvailable(false);
         }
         else
         {
+
             BuildingNameLabel.text = building.Name;
             UpgradeNumberText.text = building.UpgradeNumber.ToString();
-            SetSellButtonAvailable(true);
+
+			BuildingIncomeLabel.text = Helper.GetDisplayableValue(building.GetIncome());
+
+			UpgradeCostLabel.text = Helper.GetDisplayableValue(building.GetCost());
+			SellCostLabel.text = Helper.GetDisplayableValue(building.GetSellPrice());
+
+			SetSellButtonAvailable(true);
             SetUpgradeButtonAvailable(true);
         }
     }
@@ -113,7 +142,7 @@ public class GUIManager : MonoBehaviour {
             Text btnText = buildingButton.GetComponentInChildren<Text>();
             if (btnText != null)
             {
-                btnText.text = building.Name;
+                btnText.text = building.Name.Substring(0, 1);
             }
         }
     }
@@ -131,7 +160,6 @@ public class GUIManager : MonoBehaviour {
 		if(available)
 		{
             BigInteger sellPrice = Helper.GetTileManager().CurrentTile.Building.GetSellPrice();
-			SellButton.GetComponentInChildren<Text>().text = string.Format("Sprzedaj za {0}", Helper.GetDisplayableValue(sellPrice));
 		}
 	}
 
@@ -147,7 +175,6 @@ public class GUIManager : MonoBehaviour {
         if(available)
         {
             BigInteger upgradePrice = Helper.GetTileManager().CurrentTile.Building.GetCost();
-            UpgradeButton.GetComponentInChildren<Text>().text = string.Format("Ulepsz za {0}", Helper.GetDisplayableValue(upgradePrice));
         }
     }
 }
